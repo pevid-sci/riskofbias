@@ -113,13 +113,6 @@ def call_llm(prompt_content):
             st.error("Please provide an API Key.")
             return None
         
-        def call_llm(prompt_content):
-    if selected_mode == "Cloud API":
-        if not api_key:
-            st.error("Please provide an API Key.")
-            return None
-        
-        # Define o base_url correto para cada um
         if provider == "Groq":
             base_url = "https://api.groq.com/openai/v1"
         elif provider == "OpenRouter":
@@ -140,7 +133,7 @@ def call_llm(prompt_content):
         response = ollama.generate(model=model_name, prompt=prompt_content, format="json")
         return response['response']
 
-# --- The "Lai et al." Expert Prompt ---
+# --- "Lai et al. 2024" Prompt ---
 EXPERT_SYSTEM_PROMPT = """
 Introduction and Role Setting:
 

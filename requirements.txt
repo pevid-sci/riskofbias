@@ -1,0 +1,6 @@
+streamlit
+ollama
+pandas
+PyPDF2
+xlsxwriter
+openai

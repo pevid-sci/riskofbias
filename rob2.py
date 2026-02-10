@@ -49,7 +49,7 @@ with st.expander("📖 How to use", expanded=True):
 with st.sidebar:
     st.header("⚙️ Settings")
     
-    mode_options = ["Cloud API (Groq/OpenRouter)", "Local Ollama"]
+    mode_options = ["Cloud API", "Local Ollama"]
     selected_mode = st.radio("Processing Mode", mode_options, index=0 if IS_CLOUD else 1)
 
     if selected_mode == "Local Ollama" and IS_CLOUD:
@@ -58,8 +58,8 @@ with st.sidebar:
 
     st.divider()
 
-    if selected_mode == "Cloud API (Groq/OpenRouter)":
-        provider = st.selectbox("Provider", ["Groq", "OpenRouter"])
+    if selected_mode == "Cloud API":
+        provider = st.selectbox("Provider", ["Groq", "OpenRouter", "OpenAI"])
         
         # --- Secrets Logic ---
         secret_key_name = f"{provider.upper()}_API_KEY"
@@ -72,13 +72,14 @@ with st.sidebar:
             api_key = st.text_input(f"{provider} API Key", type="password", help="Enter your key manually.")
         
         # Updated models list for Cloud
-        if provider == "Groq":
-            cloud_options = ["llama-3.3-70b-versatile", "deepseek-r1-distill-llama-70b", "llama3-70b-8192", "gemma2-9b-it (Test only)", "Other (Type name...)"]
+        if provider == "OpenAI":
+            cloud_options = ["gpt-5.2-pro-2025-12-11", "", "gpt-oss-120b", "o3-2025-04-16", "Other (Type name...)"]
+        elif provider == "Groq":
+            cloud_options = ["llama-3.3-70b-versatile", "deepseek-r1-distill-llama-70b", "llama3-70b-8192", "Other (Type name...)"]
         else:
             cloud_options = ["deepseek/deepseek-r1", "llama-3.3-70b-versatile", "Other (Type name...)"]
-            
         selected_cloud_model = st.selectbox("Model", cloud_options)
-        model_name = st.text_input("Enter Cloud Model Name:") if "Other" in selected_cloud_model else selected_cloud_model.split(" ")[0]
+        model_name = st.text_input("Enter model name (e.g., gpt-oss-120b):") if "Other" in selected_cloud_model else selected_cloud_model.split(" ")[0]
             
     else:
         # Local Ollama Mode
@@ -107,12 +108,25 @@ with st.sidebar:
     
 # --- Unified Inference Function ---
 def call_llm(prompt_content):
-    if selected_mode == "Cloud API (Groq/OpenRouter)":
+    if selected_mode == "Cloud API":
         if not api_key:
             st.error("Please provide an API Key.")
             return None
         
-        base_url = "https://api.groq.com/openai/v1" if provider == "Groq" else "https://openrouter.ai/api/v1"
+        def call_llm(prompt_content):
+    if selected_mode == "Cloud API":
+        if not api_key:
+            st.error("Please provide an API Key.")
+            return None
+        
+        # Define o base_url correto para cada um
+        if provider == "Groq":
+            base_url = "https://api.groq.com/openai/v1"
+        elif provider == "OpenRouter":
+            base_url = "https://openrouter.ai/api/v1"
+        else:
+            base_url = None # Padrão da biblioteca OpenAI
+            
         client = OpenAI(api_key=api_key, base_url=base_url)
         
         response = client.chat.completions.create(
@@ -366,4 +380,4 @@ if uploaded_files and st.button("Start Batch Processing"):
                 st.json(res['Full_JSON'])
 
 st.divider()
-st.caption("2026 | Integration with local AIs is available only in the desktop/local version.")
+st.caption("2026 | Integration with local AIs is available only in the desktop version.")

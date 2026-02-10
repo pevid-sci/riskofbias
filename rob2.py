@@ -73,7 +73,7 @@ with st.sidebar:
         
         # Updated models list for Cloud
         if provider == "OpenAI":
-            cloud_options = ["gpt-5.2-pro-2025-12-11", "gpt-oss-120b", "o3-2025-04-16", "Other (Type name...)"]
+            cloud_options = ["gpt-5-chat-latest", "o3-2025-04-16", "Other (Type name...)"]
         elif provider == "Groq":
             cloud_options = ["llama-3.3-70b-versatile", "deepseek-r1-distill-llama-70b", "llama3-70b-8192", "Other (Type name...)"]
         else:
@@ -375,3 +375,4 @@ if uploaded_files and st.button("Start Batch Processing"):
 st.divider()
 
 st.caption("2026 | Integration with local AIs is available only in the desktop version.")
+
